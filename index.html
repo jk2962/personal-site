@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jason Kim</title>
+<meta name="description" content="Jason Kim — Operations Research & Information Engineering, Cornell '27.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f7f4;
+    --ink: #1a1d19;
+    --mute: #6f746d;
+    --rule: #dcdfd8;
+    --accent: #b31b1b;      /* Cornell carnelian, used once */
+    --ascii: #1a1d19;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101211;
+      --ink: #e8eae5;
+      --mute: #8d928b;
+      --rule: #262927;
+      --accent: #e04a4a;
+      --ascii: #e8eae5;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 17px/1.55 var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); transition: border-color .15s; }
+  a:hover, a:focus-visible { border-color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  ::selection { background: var(--accent); color: #fff; }
+
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-content: end;
+    padding: 6rem 1.5rem 3rem;
+    overflow: hidden;
+  }
+  #ascii {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    z-index: 0;
+    font: 400 12px/12px var(--mono);
+    letter-spacing: 0;
+    color: var(--ascii);
+    opacity: 0;
+    white-space: pre;
+    user-select: none;
+    cursor: grab;
+    touch-action: none;
+    transition: opacity 1.4s ease .2s;
+    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 72% 45%, #000 20%, transparent 75%);
+            mask-image: radial-gradient(ellipse 70% 80% at 72% 45%, #000 20%, transparent 75%);
+  }
+  #ascii.on { opacity: .55; }
+  #ascii:active { cursor: grabbing; }
+  .hero-text { position: relative; z-index: 1; max-width: 34rem; pointer-events: none; }
+  .hero-text a { pointer-events: auto; }
+  h1 {
+    margin: 0 0 .6rem;
+    font: 500 clamp(2.6rem, 7vw, 4.6rem)/1 var(--sans);
+    letter-spacing: -0.03em;
+  }
+  h1 span { display: inline-block; opacity: 0; transform: translateY(.4em); animation: rise .7s cubic-bezier(.2,.7,.2,1) forwards; }
+  .lede { margin: 0; font-size: 1.05rem; max-width: 30rem; opacity: 0; animation: rise .8s .55s cubic-bezier(.2,.7,.2,1) forwards; }
+  .links { margin: 1.6rem 0 0; padding: 0; list-style: none; display: flex; gap: 1.4rem; font-family: var(--mono); font-size: .85rem; opacity: 0; animation: rise .8s .8s cubic-bezier(.2,.7,.2,1) forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+
+  /* ---------- body ---------- */
+  main { max-width: 40rem; padding: 0 1.5rem 6rem; margin: 0 auto; }
+  section { padding: 3.5rem 0 0; }
+  h2 {
+    margin: 0 0 1.2rem;
+    font: 500 .85rem/1 var(--mono);
+    color: var(--mute);
+  }
+  p { margin: 0 0 1rem; max-width: 34rem; }
+
+  .rows { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
+  .rows li { display: grid; grid-template-columns: 1fr auto; gap: .2rem 1.5rem; padding: .9rem 0; border-bottom: 1px solid var(--rule); }
+  .rows .name { font-weight: 500; }
+  .rows .when { font-family: var(--mono); font-size: .8rem; color: var(--mute); }
+  .rows .desc { grid-column: 1 / -1; color: var(--mute); }
+  .rows a { border: 0; }
+  .rows li:has(a:hover) .name, .rows li:has(a:focus-visible) .name { color: var(--accent); }
+
+  .courses { columns: 2; column-gap: 2rem; margin: 0; padding: 0; list-style: none; font-family: var(--mono); font-size: .85rem; line-height: 1.9; }
+  .courses li { break-inside: avoid; }
+  .courses span { color: var(--mute); }
+
+  footer { max-width: 40rem; margin: 0 auto; padding: 0 1.5rem 3rem; font-family: var(--mono); font-size: .8rem; color: var(--mute); }
+  footer pre { margin: 0 0 1.2rem; font: inherit; line-height: 1.2; }
+
+  @media (max-width: 640px) {
+    .hero { padding-top: 4rem; }
+    #ascii { font-size: 9px; line-height: 9px; -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 30%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 90% 60% at 50% 30%, #000 10%, transparent 75%); }
+    .courses { columns: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    h1 span, .lede, .links { animation: none; opacity: 1; transform: none; }
+    #ascii { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <pre id="ascii" aria-hidden="true"></pre>
+  <div class="hero-text">
+    <h1 aria-label="Jason Kim"></h1>
+    <p class="lede">Junior at Cornell studying Operations Research &amp; Information Engineering. I like taking messy systems and finding the structure that makes them solvable.</p>
+    <ul class="links">
+      <li><a href="mailto:jk2962@cornell.edu">email</a></li>
+      <li><a href="https://github.com/">github</a></li>
+      <li><a href="https://linkedin.com/">linkedin</a></li>
+      <li><a href="resume.pdf">resume</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+  <section id="now">
+    <h2>now</h2>
+    <p>Spending this semester on stochastic processes and the second half of optimization. Outside class I'm building a small scheduler for a campus org and reading too much about queueing theory.</p>
+    <p>Looking for summer 2027 internships in operations, supply chain, or quant research.</p>
+  </section>
+
+  <section id="work">
+    <h2>work</h2>
+    <ul class="rows">
+      <li>
+        <a class="name" href="#">Shift scheduler</a>
+        <span class="when">2026</span>
+        <span class="desc">Integer program that assigns 40 volunteers to weekly shifts with availability and fairness constraints. Python, PuLP, CBC.</span>
+      </li>
+      <li>
+        <a class="name" href="#">Dining hall queue sim</a>
+        <span class="when">2025</span>
+        <span class="desc">Discrete-event simulation of lunch rush at Okenshields; estimated wait-time gains from one extra swipe station.</span>
+      </li>
+      <li>
+        <a class="name" href="#">TCAT route explorer</a>
+        <span class="when">2025</span>
+        <span class="desc">Shortest-path visualizer over Ithaca's bus network using GTFS data and Dijkstra with time-dependent edges.</span>
+      </li>
+    </ul>
+  </section>
+
+  <section id="courses">
+    <h2>coursework</h2>
+    <ul class="courses">
+      <li>ORIE 3300 <span>Optimization I</span></li>
+      <li>ORIE 3310 <span>Optimization II</span></li>
+      <li>ORIE 3500 <span>Probability &amp; Statistics</span></li>
+      <li>ORIE 3510 <span>Stochastic Processes</span></li>
+      <li>ORIE 3120 <span>Data Analytics</span></li>
+      <li>ORIE 4580 <span>Simulation</span></li>
+      <li>CS 2110 <span>OO Programming</span></li>
+      <li>MATH 2940 <span>Linear Algebra</span></li>
+    </ul>
+  </section>
+
+  <section id="contact">
+    <h2>contact</h2>
+    <p>Best reached at <a href="mailto:jk2962@cornell.edu">jk2962@cornell.edu</a>. Happy to talk about optimization, Ithaca, or whatever you're building.</p>
+  </section>
+</main>
+
+<footer>
+<pre aria-hidden="true">min  c'x
+s.t. Ax = b
+     x ≥ 0</pre>
+  Ithaca, NY · 2026
+</footer>
+
+<script>
+/* ---------- name reveal ---------- */
+(() => {
+  const h1 = document.querySelector('h1');
+  [...'Jason Kim'].forEach((ch, i) => {
+    const s = document.createElement('span');
+    s.textContent = ch === ' ' ? ' ' : ch;
+    s.style.animationDelay = (i * 45) + 'ms';
+    h1.appendChild(s);
+  });
+})();
+
+/* ---------- ascii 3d: shaded icosahedron, no deps ---------- */
+(() => {
+  const pre = document.getElementById('ascii');
+  const RAMP = ' .,:;-=+*#%@';
+  const PHI = (1 + Math.sqrt(5)) / 2;
+
+  // vertices + faces of an icosahedron (faces = triples of mutually adjacent vertices)
+  const raw = [];
+  for (const a of [-1, 1]) for (const b of [-PHI, PHI]) raw.push([0, a, b], [a, b, 0], [b, 0, a]);
+  const V = raw.map(v => { const l = Math.hypot(...v); return v.map(x => x / l); });
+  const dist = (p, q) => Math.hypot(p[0]-q[0], p[1]-q[1], p[2]-q[2]);
+  const edge = Math.min(...V.slice(1).map(v => dist(V[0], v)));
+  const adj = (i, j) => Math.abs(dist(V[i], V[j]) - edge) < 1e-6;
+  const F = [];
+  for (let i = 0; i < 12; i++) for (let j = i+1; j < 12; j++) for (let k = j+1; k < 12; k++)
+    if (adj(i,j) && adj(j,k) && adj(i,k)) F.push([i, j, k]);
+
+  let cols = 0, rows = 0, cw = 7.2, chh = 12, cx = 0, cy = 0;
+  let ax = 0.4, ay = 0.6, vx = 0, vy = 0.004;
+  let grid, zbuf;
+
+  function measure() {
+    const probe = document.createElement('span');
+    probe.textContent = 'M'.repeat(50);
+    probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre';
+    pre.appendChild(probe);
+    cw = probe.getBoundingClientRect().width / 50;
+    chh = parseFloat(getComputedStyle(pre).lineHeight);
+    probe.remove();
+    const r = pre.getBoundingClientRect();
+    cols = Math.floor(r.width / cw);
+    rows = Math.floor(r.height / chh);
+    grid = new Array(cols * rows);
+    zbuf = new Float32Array(cols * rows);
+    cx = cols * (window.innerWidth > 640 ? 0.72 : 0.5);
+    cy = rows * (window.innerWidth > 640 ? 0.45 : 0.3);
+  }
+
+  function rotate([x, y, z]) {
+    const cy_ = Math.cos(ay), sy = Math.sin(ay), cx_ = Math.cos(ax), sx = Math.sin(ax);
+    const x1 = x * cy_ + z * sy, z1 = -x * sy + z * cy_;
+    const y2 = y * cx_ - z1 * sx, z2 = y * sx + z1 * cx_;
+    return [x1, y2, z2];
+  }
+
+  function frame() {
+    grid.fill(' '); zbuf.fill(-Infinity);
+    const aspect = chh / cw;                       // chars are taller than wide
+    const R = Math.min(rows * 0.42, cols / aspect * 0.42);
+    const light = [0.4, 0.7, 0.6];
+    const P = V.map(v => {
+      const [x, y, z] = rotate(v);
+      return [cx + x * R * aspect, cy - y * R, z, x, y, z];
+    });
+    for (const [a, b, c] of F) {
+      const A = P[a], B = P[b], C = P[c];
+      // face normal from rotated (unprojected) coords
+      const u = [B[3]-A[3], B[4]-A[4], B[5]-A[5]], w = [C[3]-A[3], C[4]-A[4], C[5]-A[5]];
+      let n = [u[1]*w[2]-u[2]*w[1], u[2]*w[0]-u[0]*w[2], u[0]*w[1]-u[1]*w[0]];
+      const nl = Math.hypot(...n); n = n.map(x => x / nl);
+      // faces were found unordered; flip so normal points outward
+      const centroid = [(A[3]+B[3]+C[3]), (A[4]+B[4]+C[4]), (A[5]+B[5]+C[5])];
+      if (n[0]*centroid[0] + n[1]*centroid[1] + n[2]*centroid[2] < 0) n = n.map(x => -x);
+      if (n[2] < 0) continue; // backface
+      const shade = Math.max(0, n[0]*light[0] + n[1]*light[1] + n[2]*light[2]);
+      const ch = RAMP[Math.min(RAMP.length - 1, Math.floor(shade * (RAMP.length - 1) + 1))];
+      // rasterize triangle
+      const minX = Math.max(0, Math.floor(Math.min(A[0], B[0], C[0]))), maxX = Math.min(cols - 1, Math.ceil(Math.max(A[0], B[0], C[0])));
+      const minY = Math.max(0, Math.floor(Math.min(A[1], B[1], C[1]))), maxY = Math.min(rows - 1, Math.ceil(Math.max(A[1], B[1], C[1])));
+      const det = (B[0]-A[0])*(C[1]-A[1]) - (C[0]-A[0])*(B[1]-A[1]);
+      if (Math.abs(det) < 1e-9) continue;
+      for (let y = minY; y <= maxY; y++) for (let x = minX; x <= maxX; x++) {
+        const px = x + 0.5, py = y + 0.5;
+        const l1 = ((B[0]-px)*(C[1]-py) - (C[0]-px)*(B[1]-py)) / det;
+        const l2 = ((C[0]-px)*(A[1]-py) - (A[0]-px)*(C[1]-py)) / det;
+        const l3 = 1 - l1 - l2;
+        if (l1 < 0 || l2 < 0 || l3 < 0) continue;
+        const z = l1*A[2] + l2*B[2] + l3*C[2];
+        const i = y * cols + x;
+        if (z > zbuf[i]) { zbuf[i] = z; grid[i] = ch; }
+      }
+    }
+    let out = '';
+    for (let y = 0; y < rows; y++) out += grid.slice(y * cols, (y + 1) * cols).join('') + '\n';
+    pre.textContent = out;
+  }
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let dragging = false, lx = 0, ly = 0;
+  pre.addEventListener('pointerdown', e => { dragging = true; lx = e.clientX; ly = e.clientY; vx = vy = 0; pre.setPointerCapture(e.pointerId); });
+  pre.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    vy = (e.clientX - lx) * 0.006; vx = (e.clientY - ly) * 0.006;
+    ay += vy; ax += vx; lx = e.clientX; ly = e.clientY;
+    if (reduce) frame();
+  });
+  pre.addEventListener('pointerup', () => { dragging = false; });
+
+  function loop() {
+    if (!dragging) {
+      ay += vy; ax += vx;
+      vy += (0.004 - vy) * 0.02; vx *= 0.95; // ease back to idle spin
+    }
+    frame();
+    requestAnimationFrame(loop);
+  }
+
+  measure();
+  addEventListener('resize', () => { measure(); frame(); });
+  document.fonts.ready.then(() => { measure(); frame(); pre.classList.add('on'); if (!reduce) loop(); });
+})();
+</script>
+</body>
+</html>
