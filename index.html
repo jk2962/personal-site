@@ -86,7 +86,7 @@
 
   /* ---------- body ---------- */
   main { max-width: 40rem; padding: 0 1.5rem 6rem; margin: 0 auto; }
-  section { padding: 3.5rem 0 0; }
+  section { position: relative; padding: 3.5rem 0 0; }
   h2 {
     margin: 0 0 1.2rem;
     font: 500 .85rem/1 var(--mono);
@@ -109,11 +109,94 @@
   footer { max-width: 40rem; margin: 0 auto; padding: 0 1.5rem 3rem; font-family: var(--mono); font-size: .8rem; color: var(--mute); }
   footer pre { margin: 0 0 1.2rem; font: inherit; line-height: 1.2; }
 
+  /* ---------- ask jason ---------- */
+  .chat { border-top: 1px solid var(--rule); margin: 0; }
+  .chat-log { margin: 0; padding: 0; list-style: none; }
+  .chat-log li { padding: .9rem 0; border-bottom: 1px solid var(--rule); }
+  .chat-log .who { display: block; font: 500 .75rem/1 var(--mono); color: var(--mute); margin-bottom: .35rem; }
+  .chat-log .said { margin: 0; white-space: pre-wrap; }
+  .chat-form { display: flex; gap: .75rem; padding: 1rem 0 0; }
+  .chat-form input {
+    flex: 1; min-width: 0; background: transparent; color: inherit;
+    border: 0; border-bottom: 1px solid var(--rule);
+    font: 400 1rem/1.5 var(--sans); padding: .4rem 0;
+  }
+  .chat-form input::placeholder { color: var(--mute); }
+  .chat-form input:focus { outline: 0; border-bottom-color: var(--accent); }
+  .chat-form button {
+    background: transparent; color: var(--mute); cursor: pointer;
+    border: 1px solid var(--rule); border-radius: 2px;
+    font: 500 .8rem/1 var(--mono); padding: .5rem .8rem;
+    transition: color .15s, border-color .15s;
+  }
+  .chat-form button:hover:not(:disabled), .chat-form button:focus-visible { color: var(--accent); border-color: var(--accent); }
+  .chat-form button:disabled { opacity: .5; cursor: default; }
+  .chat-note { font: 400 .8rem/1.5 var(--mono); color: var(--mute); margin: .8rem 0 0; }
+
   @media (max-width: 640px) {
     .hero { padding-top: 4rem; }
     #ascii { font-size: 9px; line-height: 9px; -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 30%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 90% 60% at 50% 30%, #000 10%, transparent 75%); }
     .courses { columns: 1; }
   }
+  /* ---------- margin notes: live in the gutter, never in the way ---------- */
+  .aside {
+    position: absolute;
+    top: 3.5rem;
+    left: 100%;
+    /* centre in the gutter: content column is 40rem, so each gutter is (100vw - 640px)/2
+       and its midpoint is half that out from the column edge. translateX centres the art
+       on that point without needing to know how wide the art renders. */
+    margin-left: calc(25vw - 148px);
+    transform: translateX(-50%);
+    /* Plex Mono has no braille block, so let those glyphs fall through to a font that does.
+       Per-character fallback keeps the grid intact because the art is entirely U+28xx. */
+    font-family: var(--mono), Menlo, "DejaVu Sans Mono", "Segoe UI Symbol", monospace;
+    font-size: 11px;
+    line-height: 1;
+    font-weight: 400;
+    color: var(--mute);
+    white-space: pre;
+    opacity: .45;
+    cursor: help;
+    transition: opacity .3s ease, color .3s ease;
+  }
+  .aside-left {
+    left: auto; right: 100%;
+    margin: 0 calc(25vw - 148px) 0 0;
+    transform: translateX(50%);
+  }
+  /* braille art only: the fallback font sets cells wider than the dots need.
+     ASCII line art must NOT get this or the rules overlap. */
+  .aside-braille { font-size: 9px; letter-spacing: -0.05em; line-height: 1.18; }
+
+  .aside:hover, .aside:focus-visible { opacity: 1; color: var(--accent); }
+
+  .aside::after {
+    content: attr(data-note);
+    position: absolute;
+    z-index: 3;
+    top: calc(100% + .7rem);
+    left: 0;
+    width: 12rem;
+    padding: .55rem .7rem;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-left: 2px solid var(--accent);
+    color: var(--ink);
+    font: 400 12px/1.45 var(--sans);
+    letter-spacing: normal;    /* don't inherit the art's tightening */
+    white-space: normal;
+    opacity: 0;
+    transform: translateY(-.2rem);
+    transition: opacity .2s ease, transform .2s ease;
+    pointer-events: none;
+  }
+  .aside-left::after { left: auto; right: 0; border-left: 1px solid var(--rule); border-right: 2px solid var(--accent); }
+  .aside:hover::after, .aside:focus-visible::after { opacity: 1; transform: none; }
+
+  /* no gutter to spare — drop them rather than crowd the column */
+  @media (max-width: 1200px) { .aside { display: none; } }
+
   @media (prefers-reduced-motion: reduce) {
     h1 span, .lede, .links { animation: none; opacity: 1; transform: none; }
     #ascii { transition: none; }
@@ -129,58 +212,17 @@
     <p class="lede">Junior at Cornell studying Operations Research &amp; Information Engineering. I like taking messy systems and finding the structure that makes them solvable.</p>
     <ul class="links">
       <li><a href="mailto:jk2962@cornell.edu">email</a></li>
-      <li><a href="https://github.com/">github</a></li>
-      <li><a href="https://linkedin.com/">linkedin</a></li>
+      <li><a href="https://github.com/jk2962">github</a></li>
+      <li><a href="https://www.linkedin.com/in/jasonkim06/">linkedin</a></li>
       <li><a href="resume.pdf">resume</a></li>
     </ul>
   </div>
 </header>
 
 <main>
-  <section id="now">
-    <h2>now</h2>
-    <p>Spending this semester on stochastic processes and the second half of optimization. Outside class I'm building a small scheduler for a campus org and reading too much about queueing theory.</p>
-    <p>Looking for summer 2027 internships in operations, supply chain, or quant research.</p>
-  </section>
-
-  <section id="work">
-    <h2>work</h2>
-    <ul class="rows">
-      <li>
-        <a class="name" href="#">Shift scheduler</a>
-        <span class="when">2026</span>
-        <span class="desc">Integer program that assigns 40 volunteers to weekly shifts with availability and fairness constraints. Python, PuLP, CBC.</span>
-      </li>
-      <li>
-        <a class="name" href="#">Dining hall queue sim</a>
-        <span class="when">2025</span>
-        <span class="desc">Discrete-event simulation of lunch rush at Okenshields; estimated wait-time gains from one extra swipe station.</span>
-      </li>
-      <li>
-        <a class="name" href="#">TCAT route explorer</a>
-        <span class="when">2025</span>
-        <span class="desc">Shortest-path visualizer over Ithaca's bus network using GTFS data and Dijkstra with time-dependent edges.</span>
-      </li>
-    </ul>
-  </section>
-
-  <section id="courses">
-    <h2>coursework</h2>
-    <ul class="courses">
-      <li>ORIE 3300 <span>Optimization I</span></li>
-      <li>ORIE 3310 <span>Optimization II</span></li>
-      <li>ORIE 3500 <span>Probability &amp; Statistics</span></li>
-      <li>ORIE 3510 <span>Stochastic Processes</span></li>
-      <li>ORIE 3120 <span>Data Analytics</span></li>
-      <li>ORIE 4580 <span>Simulation</span></li>
-      <li>CS 2110 <span>OO Programming</span></li>
-      <li>MATH 2940 <span>Linear Algebra</span></li>
-    </ul>
-  </section>
-
-  <section id="contact">
-    <h2>contact</h2>
-    <p>Best reached at <a href="mailto:jk2962@cornell.edu">jk2962@cornell.edu</a>. Happy to talk about optimization, Ithaca, or whatever you're building.</p>
+  <section id="wip">
+    <h2>work in progress</h2>
+    <p>The rest of this page is being rebuilt. Check back soon, or email me at <a href="mailto:jk2962@cornell.edu">jk2962@cornell.edu</a>.</p>
   </section>
 </main>
 
@@ -306,7 +348,7 @@ s.t. Ax = b
       ay += vy; ax += vx;
       vy += (0.004 - vy) * 0.02; vx *= 0.95; // ease back to idle spin
     }
-    frame();
+    if (scrollY < innerHeight) frame(); // hero off-screen: skip the raster
     requestAnimationFrame(loop);
   }
 
