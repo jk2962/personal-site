@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jason Kim</title>
-<meta name="description" content="Jason Kim — Operations Research & Information Engineering, Cornell '27.">
+<title>jasonkim</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="description" content="Jason Kim — Operations Research & Information Engineering, Cornell '28.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Redaction+35&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #f6f7f4;
@@ -16,7 +17,8 @@
     --rule: #dcdfd8;
     --accent: #b31b1b;      /* Cornell carnelian, used once */
     --ascii: #1a1d19;
-    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --serif: "Redaction 35", Georgia, serif;
+    --line: color-mix(in srgb, var(--ink) 35%, transparent);  /* link underline */
     --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   }
   @media (prefers-color-scheme: dark) {
@@ -36,23 +38,24 @@
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font: 400 17px/1.55 var(--sans);
+    font: 400 17px/1.6 var(--serif);
     -webkit-font-smoothing: antialiased;
+    /* one screen, no scroll: hero top-left, wip + footer pinned bottom-left */
+    position: relative;
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 3rem 1.5rem;
   }
-  a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); transition: border-color .15s; }
+  a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--line); transition: border-color .15s; }
   a:hover, a:focus-visible { border-color: var(--accent); }
+  .tab { font: inherit; color: inherit; background: none; padding: 0; border: 0; border-bottom: 1px solid var(--line); cursor: pointer; transition: border-color .15s; }
+  .tab:hover, .tab:focus-visible, .tab[aria-expanded="true"] { border-color: var(--accent); }
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   ::selection { background: var(--accent); color: #fff; }
 
   /* ---------- hero ---------- */
-  .hero {
-    position: relative;
-    min-height: 100svh;
-    display: grid;
-    align-content: end;
-    padding: 6rem 1.5rem 3rem;
-    overflow: hidden;
-  }
   #ascii {
     position: absolute;
     inset: 0;
@@ -64,78 +67,101 @@
     opacity: 0;
     white-space: pre;
     user-select: none;
-    cursor: grab;
     touch-action: none;
     transition: opacity 1.4s ease .2s;
-    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 72% 45%, #000 20%, transparent 75%);
-            mask-image: radial-gradient(ellipse 70% 80% at 72% 45%, #000 20%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 72% 50%, #000 20%, transparent 75%);
+            mask-image: radial-gradient(ellipse 70% 80% at 72% 50%, #000 20%, transparent 75%);
   }
   #ascii.on { opacity: .55; }
-  #ascii:active { cursor: grabbing; }
   .hero-text { position: relative; z-index: 1; max-width: 34rem; pointer-events: none; }
-  .hero-text a { pointer-events: auto; }
+  .hero-text a, .hero-text button { pointer-events: auto; }
   h1 {
     margin: 0 0 .6rem;
-    font: 500 clamp(2.6rem, 7vw, 4.6rem)/1 var(--sans);
+    font: 400 clamp(2.6rem, 7vw, 4.6rem)/1 var(--serif);
     letter-spacing: -0.03em;
   }
-  h1 span { display: inline-block; opacity: 0; transform: translateY(.4em); animation: rise .7s cubic-bezier(.2,.7,.2,1) forwards; }
-  .lede { margin: 0; font-size: 1.05rem; max-width: 30rem; opacity: 0; animation: rise .8s .55s cubic-bezier(.2,.7,.2,1) forwards; }
-  .links { margin: 1.6rem 0 0; padding: 0; list-style: none; display: flex; gap: 1.4rem; font-family: var(--mono); font-size: .85rem; opacity: 0; animation: rise .8s .8s cubic-bezier(.2,.7,.2,1) forwards; }
-  @keyframes rise { to { opacity: 1; transform: none; } }
+  .hi { margin: 0 0 .5rem; font-size: 1.25rem; }
+  /* pixel icons: 13-cell bitmap at 19.5px = 3 device px per cell on retina; crispEdges keeps it sharp */
+  .icons { gap: .75rem; align-self: center; }
+  .icons a { display: block; border: 0; line-height: 0; }
+  .icons a:hover, .icons a:focus-visible { color: var(--accent); }
+  .icons svg { width: 19.5px; height: 19.5px; fill: currentColor; shape-rendering: crispEdges; }
+  .links.nav { margin-top: 1.4rem; font-size: 1rem; }
+  .lede { margin: 0; max-width: 30rem; }
+  .links { margin: 0; padding: 0; color: var(--ink); list-style: none; display: flex; gap: 1.4rem; font-family: var(--serif); font-size: .85rem; }
 
   /* ---------- body ---------- */
-  main { max-width: 40rem; padding: 0 1.5rem 6rem; margin: 0 auto; }
-  section { position: relative; padding: 3.5rem 0 0; }
-  h2 {
-    margin: 0 0 1.2rem;
-    font: 500 .85rem/1 var(--mono);
-    color: var(--mute);
-  }
+  main { position: relative; z-index: 1; max-width: 34rem; margin-top: auto; }
   p { margin: 0 0 1rem; max-width: 34rem; }
 
   .rows { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule); }
   .rows li { display: grid; grid-template-columns: 1fr auto; gap: .2rem 1.5rem; padding: .9rem 0; border-bottom: 1px solid var(--rule); }
   .rows .name { font-weight: 500; }
-  .rows .when { font-family: var(--mono); font-size: .8rem; color: var(--mute); }
-  .rows .desc { grid-column: 1 / -1; color: var(--mute); }
-  .rows a { border: 0; }
-  .rows li:has(a:hover) .name, .rows li:has(a:focus-visible) .name { color: var(--accent); }
+  .rows .when { font-family: var(--serif); font-size: .8rem; color: var(--mute); }
+  .rows .desc { grid-column: 1 / -1; justify-self: start; color: var(--mute); font-size: .9rem; }
 
-  .courses { columns: 2; column-gap: 2rem; margin: 0; padding: 0; list-style: none; font-family: var(--mono); font-size: .85rem; line-height: 1.9; }
+  /* nav drawers: 0fr -> 1fr row animates to the content's natural height */
+  .drawer { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .4s cubic-bezier(.2,.7,.2,1), opacity .25s ease; }
+  .drawer.open { grid-template-rows: 1fr; opacity: 1; }
+  .drawer > div { overflow: hidden; min-height: 0; }
+  /* fake heart monitor: 64x14 canvas shown at 2x with pixelated scaling, to match the pixel icons */
+  .pulse { display: flex; align-items: center; gap: .7rem; margin-bottom: 1rem; font-size: .8rem; color: var(--mute); }
+  .pulse canvas { width: 128px; height: 28px; image-rendering: pixelated; color: var(--ink); }
+  .pulse b { font-weight: 400; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .bpm { white-space: nowrap; }
+  /* fake now playing: pixel equalizer + track; the underline doubles as the progress bar */
+  .np { display: flex; align-items: center; gap: .45rem; min-width: 0; margin-left: .5rem; }
+  .np-text { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding-bottom: 2px;
+    background: linear-gradient(var(--ink), var(--ink)) 0 100% / var(--p, 0%) 1px no-repeat,
+                linear-gradient(var(--rule), var(--rule)) 0 100% / 100% 1px no-repeat; }
+  .eq { display: flex; align-items: flex-end; gap: 1px; height: 10px; flex: none; padding: 0; border: 0; background: none; cursor: pointer; }
+  .eq i { width: 2px; height: 2px; background: var(--ink); animation: eq .9s steps(4, jump-none) infinite alternate; }
+  .np.playing .eq i, .eq:hover i, .eq:focus-visible i { background: var(--accent); } /* red while a preview plays */
+  .np-text { border: 0; }
+  .np-text:hover b, .np-text:focus-visible b { color: var(--accent); }
+  .eq i:nth-child(2) { animation-duration: 1.15s; animation-delay: -.4s; }
+  .eq i:nth-child(3) { animation-duration: .75s; animation-delay: -.7s; }
+  @keyframes eq { to { height: 10px; } }
+  .drawer .rows { margin-top: 1.2rem; max-width: 30rem; }
+  .drawer p { margin: 1.2rem 0 0; max-width: 30rem; }
+  .drawer li { opacity: 0; transform: translateY(-.4rem); transition: opacity .3s ease, transform .3s ease; }
+  .drawer.open li { opacity: 1; transform: none; }
+  .drawer.open li:nth-child(2) { transition-delay: .06s; }
+  .drawer.open li:nth-child(3) { transition-delay: .12s; }
+
+  .courses { columns: 2; column-gap: 2rem; margin: 0; padding: 0; list-style: none; font-family: var(--serif); font-size: .85rem; line-height: 1.9; }
   .courses li { break-inside: avoid; }
   .courses span { color: var(--mute); }
 
-  footer { max-width: 40rem; margin: 0 auto; padding: 0 1.5rem 3rem; font-family: var(--mono); font-size: .8rem; color: var(--mute); }
+  footer { position: relative; z-index: 1; margin-top: .4rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem 1.4rem; font-family: var(--serif); font-size: .8rem; color: var(--mute); }
   footer pre { margin: 0 0 1.2rem; font: inherit; line-height: 1.2; }
 
   /* ---------- ask jason ---------- */
   .chat { border-top: 1px solid var(--rule); margin: 0; }
   .chat-log { margin: 0; padding: 0; list-style: none; }
   .chat-log li { padding: .9rem 0; border-bottom: 1px solid var(--rule); }
-  .chat-log .who { display: block; font: 500 .75rem/1 var(--mono); color: var(--mute); margin-bottom: .35rem; }
+  .chat-log .who { display: block; font: 500 .75rem/1 var(--serif); color: var(--mute); margin-bottom: .35rem; }
   .chat-log .said { margin: 0; white-space: pre-wrap; }
   .chat-form { display: flex; gap: .75rem; padding: 1rem 0 0; }
   .chat-form input {
     flex: 1; min-width: 0; background: transparent; color: inherit;
     border: 0; border-bottom: 1px solid var(--rule);
-    font: 400 1rem/1.5 var(--sans); padding: .4rem 0;
+    font: 400 1rem/1.5 var(--serif); padding: .4rem 0;
   }
   .chat-form input::placeholder { color: var(--mute); }
   .chat-form input:focus { outline: 0; border-bottom-color: var(--accent); }
   .chat-form button {
     background: transparent; color: var(--mute); cursor: pointer;
     border: 1px solid var(--rule); border-radius: 2px;
-    font: 500 .8rem/1 var(--mono); padding: .5rem .8rem;
+    font: 500 .8rem/1 var(--serif); padding: .5rem .8rem;
     transition: color .15s, border-color .15s;
   }
   .chat-form button:hover:not(:disabled), .chat-form button:focus-visible { color: var(--accent); border-color: var(--accent); }
   .chat-form button:disabled { opacity: .5; cursor: default; }
-  .chat-note { font: 400 .8rem/1.5 var(--mono); color: var(--mute); margin: .8rem 0 0; }
+  .chat-note { font: 400 .8rem/1.5 var(--serif); color: var(--mute); margin: .8rem 0 0; }
 
   @media (max-width: 640px) {
-    .hero { padding-top: 4rem; }
-    #ascii { font-size: 9px; line-height: 9px; -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 30%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 90% 60% at 50% 30%, #000 10%, transparent 75%); }
+    #ascii { font-size: 9px; line-height: 9px; -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 50%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 90% 60% at 50% 50%, #000 10%, transparent 75%); }
     .courses { columns: 1; }
   }
   /* ---------- margin notes: live in the gutter, never in the way ---------- */
@@ -183,7 +209,7 @@
     border: 1px solid var(--rule);
     border-left: 2px solid var(--accent);
     color: var(--ink);
-    font: 400 12px/1.45 var(--sans);
+    font: 400 12px/1.45 var(--serif);
     letter-spacing: normal;    /* don't inherit the art's tightening */
     white-space: normal;
     opacity: 0;
@@ -198,8 +224,8 @@
   @media (max-width: 1200px) { .aside { display: none; } }
 
   @media (prefers-reduced-motion: reduce) {
-    h1 span, .lede, .links { animation: none; opacity: 1; transform: none; }
-    #ascii { transition: none; }
+    #ascii, .drawer, .drawer li { transition: none; }
+    .eq i { animation: none; height: 6px; }
   }
 </style>
 </head>
@@ -208,38 +234,199 @@
 <header class="hero">
   <pre id="ascii" aria-hidden="true"></pre>
   <div class="hero-text">
-    <h1 aria-label="Jason Kim"></h1>
-    <p class="lede">Junior at Cornell studying Operations Research &amp; Information Engineering. I like taking messy systems and finding the structure that makes them solvable.</p>
-    <ul class="links">
-      <li><a href="mailto:jk2962@cornell.edu">email</a></li>
-      <li><a href="https://github.com/jk2962">github</a></li>
-      <li><a href="https://www.linkedin.com/in/jasonkim06/">linkedin</a></li>
-      <li><a href="https://drive.google.com/file/d/1d7WqgirYt4FSiwrA_jOOqereVPNmjjHD/view?usp=sharing">resume</a></li>
-    </ul>
+    <p class="hi">Hi, my name is</p>
+    <h1>Jason Kim</h1>
+    <p class="lede">I'm a Junior at <a href="https://www.cornell.edu/">Cornell University</a> studying <a href="https://www.duffield.cornell.edu/orie/about/">Operations Research &amp; Information Engineering</a>.</p>
+    <nav>
+      <ul class="links nav">
+        <li><button type="button" class="tab" aria-expanded="false" aria-controls="about">about me</button></li>
+        <li><button type="button" class="tab" aria-expanded="false" aria-controls="experience">experience</button></li>
+        <li><button type="button" class="tab" aria-expanded="false" aria-controls="projects">projects</button></li>
+        <li><a href="https://drive.google.com/file/d/1d7WqgirYt4FSiwrA_jOOqereVPNmjjHD/view?usp=sharing">resume</a></li>
+      </ul>
+    </nav>
+    <div class="drawer" id="about" inert>
+      <div>
+        <p>I like data work where the numbers end up deciding something real: supply chains, inventory, forecasts. Right now I&rsquo;m a data engineer intern at Ever.Ag, writing the SQL and ETL behind supply-chain reporting for dairy cooperatives. On campus I consult for the Student Activities Funding Commission and lead finance for SASE.<span id="mufc"></span></p>
+      </div>
+    </div>
+    <div class="drawer" id="experience" inert>
+      <div>
+        <ul class="rows">
+          <li><span class="name">Data Engineer Intern</span><span class="when">May 2026 – Present</span><span class="desc"><a href="https://ever.ag/data-labs">Ever.Ag Data Labs</a> · Lewisville, TX (Remote)</span></li>
+          <li><span class="name">Undergraduate Researcher</span><span class="when">Mar 2026 – May 2026</span><span class="desc">Cornell University × Corning Incorporated · Ithaca, NY</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="drawer" id="projects" inert>
+      <div>
+        <ul class="rows">
+          <li><span class="name">Simeon</span><span class="when">Sep 2026 – Present</span><a class="desc" href="https://github.com/jk2962/simeon">github.com/jk2962/simeon</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
 </header>
 
 <main>
-  <section id="wip">
-    <h2>work in progress</h2>
-    <p>The rest of this page is being rebuilt. Check back soon, or email me at <a href="mailto:jk2962@cornell.edu">jk2962@cornell.edu</a>.</p>
-  </section>
+  <div class="pulse" title="simulated, obviously"><canvas width="64" height="14" aria-hidden="true"></canvas><span class="bpm"></span><span class="np"><button type="button" class="eq" aria-label="Play a preview of this song"><i></i><i></i><i></i></button><a class="np-text" target="_blank" rel="noopener"></a></span></div>
+  <p class="contact">Always down to chat and open to work. Contact me at <a href="mailto:jk2962@cornell.edu">jk2962@cornell.edu</a>.</p>
 </main>
 
 <footer>
-  New York, NY · 2026
+  <span>New York, NY · 2026</span>
+  <ul class="links icons">
+    <li><a href="mailto:jk2962@cornell.edu" aria-label="Email"><svg viewBox="0 0 13 13" aria-hidden="true"><path d="M0 2h13v1h-13zM0 3h2v1h-2zM11 3h2v1h-2zM0 4h1v1h-1zM2 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM0 5h1v1h-1zM3 5h1v1h-1zM9 5h1v1h-1zM12 5h1v1h-1zM0 6h1v1h-1zM4 6h1v1h-1zM8 6h1v1h-1zM12 6h1v1h-1zM0 7h1v1h-1zM5 7h1v1h-1zM7 7h1v1h-1zM12 7h1v1h-1zM0 8h1v1h-1zM6 8h1v1h-1zM12 8h1v1h-1zM0 9h1v1h-1zM12 9h1v1h-1zM0 10h1v1h-1zM12 10h1v1h-1zM0 11h13v1h-13z"/></svg></a></li>
+    <li><a href="https://github.com/jk2962" aria-label="GitHub"><svg viewBox="0 0 13 13" aria-hidden="true"><path d="M4 0h5v1h-5zM2 1h9v1h-9zM1 2h2v1h-2zM4 2h5v1h-5zM10 2h2v1h-2zM1 3h2v1h-2zM10 3h2v1h-2zM0 4h2v1h-2zM11 4h2v1h-2zM0 5h2v1h-2zM11 5h2v1h-2zM0 6h2v1h-2zM11 6h2v1h-2zM0 7h2v1h-2zM11 7h2v1h-2zM0 8h3v1h-3zM10 8h3v1h-3zM1 9h4v1h-4zM8 9h4v1h-4zM1 10h4v1h-4zM8 10h4v1h-4zM2 11h3v1h-3zM8 11h3v1h-3zM4 12h1v1h-1zM8 12h1v1h-1z"/></svg></a></li>
+    <li><a href="https://www.linkedin.com/in/jasonkim06/" aria-label="LinkedIn"><svg viewBox="0 0 13 13" aria-hidden="true"><path d="M1 0h11v1h-11zM0 1h13v1h-13zM0 2h2v1h-2zM4 2h9v1h-9zM0 3h2v1h-2zM4 3h9v1h-9zM0 4h13v1h-13zM0 5h2v1h-2zM4 5h1v1h-1zM10 5h3v1h-3zM0 6h2v1h-2zM4 6h1v1h-1zM7 6h2v1h-2zM11 6h2v1h-2zM0 7h2v1h-2zM4 7h1v1h-1zM7 7h2v1h-2zM11 7h2v1h-2zM0 8h2v1h-2zM4 8h1v1h-1zM7 8h2v1h-2zM11 8h2v1h-2zM0 9h2v1h-2zM4 9h1v1h-1zM7 9h2v1h-2zM11 9h2v1h-2zM0 10h2v1h-2zM4 10h1v1h-1zM7 10h2v1h-2zM11 10h2v1h-2zM0 11h13v1h-13zM1 12h11v1h-11z"/></svg></a></li>
+  </ul>
 </footer>
 
 <script>
-/* ---------- name reveal ---------- */
+/* ---------- fake heartbeat: the rate follows my New York day ---------- */
 (() => {
-  const h1 = document.querySelector('h1');
-  [...'Jason Kim'].forEach((ch, i) => {
-    const s = document.createElement('span');
-    s.textContent = ch === ' ' ? ' ' : ch;
-    s.style.animationDelay = (i * 45) + 'ms';
-    h1.appendChild(s);
-  });
+  const cv = document.querySelector('.pulse canvas'), ctx = cv.getContext('2d'), out = document.querySelector('.pulse .bpm');
+  const W = cv.width, H = cv.height, BASE = H - 4, SPEED = 24; // columns per second
+  // [until hour (NY), resting bpm]: low overnight, up during the day
+  const DAY = [[7, 55], [9, 68], [12, 78], [13, 84], [18, 76], [22, 70], [24, 62]];
+  const base = () => {
+    const h = +new Date().toLocaleString('en-US', { timeZone: 'America/New_York', hour: 'numeric', hourCycle: 'h23' });
+    return DAY.find(d => h < d[0])[1];
+  };
+  let bpm = base();
+  // every beat: random wiggle, pulled back toward the time-of-day rate so it wanders but never drifts off
+  const beat = () => {
+    bpm += (base() - bpm) * 0.15 + (Math.random() - 0.5) * 4;
+    out.innerHTML = `<b>${Math.round(bpm)}</b> bpm`;
+  };
+  // one beat: phase 0..1 -> pixels above baseline (P wave, QRS spike, T wave)
+  const ecg = p => p < .08 ? 0 : p < .14 ? 1 : p < .2 ? 0 : p < .22 ? -1 : p < .25 ? 9 : p < .28 ? -2 : p < .38 ? 0 : p < .5 ? 2 : 0;
+  const ys = new Array(W).fill(BASE);
+  let phase = 0;
+  const step = () => {
+    const p = (phase + bpm / 60 / SPEED) % 1;
+    if (p < phase) beat();
+    phase = p; ys.shift(); ys.push(BASE - ecg(phase));
+  };
+  const draw = () => {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = getComputedStyle(cv).color;
+    // join each column to the previous one so the spike is a solid line, not dots
+    for (let x = 1; x < W; x++) ctx.fillRect(x, Math.min(ys[x], ys[x - 1]), 1, Math.abs(ys[x] - ys[x - 1]) + 1);
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+    ctx.fillRect(W - 1, ys[W - 1], 1, 1);
+  };
+  beat();
+  for (let i = 0; i < W; i++) step();
+  draw();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  let last = performance.now(), acc = 0;
+  const loop = t => {
+    acc += (t - last) / 1000 * SPEED; last = t;
+    const n = Math.floor(acc); acc -= n;
+    if (n) { for (let i = 0; i < Math.min(n, W); i++) step(); draw(); }
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+})();
+
+/* ---------- fake now playing: this week's 5 songs, placed by the clock; hover (or the button) plays a preview ---------- */
+(() => {
+  // [title, artist, seconds, 30s preview, Apple Music page]: preview clips come from the iTunes Search API
+  const POOL = [
+    ["Self Control", "Frank Ocean", 250, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/67/d5/18/67d5185e-37e4-3e36-d345-0e8075de0407/mzaf_12338821043527808523.plus.aac.p.m4a", "https://music.apple.com/us/album/self-control/1146195596?i=1146195718"],
+    ["Electric Feel", "MGMT", 230, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/47/4a/00/474a0001-c9af-5e52-af16-695889678761/mzaf_2030537019671750043.plus.aac.p.m4a", "https://music.apple.com/us/album/electric-feel/264720008?i=264720106"],
+    ["Kids", "MGMT", 303, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/f4/d9/e7/f4d9e734-de12-668f-2599-e6cc3c7b1576/mzaf_6940733390828007456.plus.aac.p.m4a", "https://music.apple.com/us/album/kids/264720008?i=264720124"],
+    ["Get You", "Daniel Caesar", 278, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/68/47/df/6847df01-ae8f-5bc2-8746-c4f9998f30c1/mzaf_18050833150545971362.plus.aac.p.m4a", "https://music.apple.com/us/album/get-you-feat-kali-uchis/1799080774?i=1799080775"],
+    ["Let It Happen", "Tame Impala", 467, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/77/68/1f/77681ffc-56e6-813c-e1bc-d94a9b5893c1/mzaf_570579359857462588.plus.aac.p.m4a", "https://music.apple.com/us/album/let-it-happen/1440838039?i=1440838060"],
+    ["Pink + White", "Frank Ocean", 185, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/ba/11/dc/ba11dccd-16d2-9cd8-13f0-85b73acc0a09/mzaf_1304250511099243436.plus.aac.p.m4a", "https://music.apple.com/us/album/pink-white/1146195596?i=1146195714"],
+    ["Do I Wanna Know?", "Arctic Monkeys", 272, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/71/cb/ba/71cbbaa1-016b-0e73-dfc2-9f4ede9ddfc0/mzaf_16266777024198047150.plus.aac.p.m4a", "https://music.apple.com/us/album/do-i-wanna-know/663097964?i=663097965"],
+    ["Space Song", "Beach House", 320, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/41/61/14/416114cc-282e-4c76-2808-a3eb9c3f973d/mzaf_6665874998714897722.plus.aac.p.m4a", "https://music.apple.com/us/album/space-song/997913392?i=997914096"],
+    ["Dreams", "Fleetwood Mac", 254, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/b6/5a/4b/b65a4b6f-54dd-ee99-0b36-98e27d5b5dd8/mzaf_13813391014293209258.plus.aac.p.m4a", "https://music.apple.com/us/album/dreams/202271826?i=202272624"],
+    ["Slow Dancing in the Dark", "Joji", 209, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/58/34/5a/58345ae3-98c1-3598-4639-4ddeeb6ed138/mzaf_15793714119013160825.plus.aac.p.m4a", "https://music.apple.com/us/album/slow-dancing-in-the-dark/1724896193?i=1724896195"],
+    ["Heat Waves", "Glass Animals", 239, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/a3/4c/b9/a34cb911-40fc-5f0c-e862-14bd171a77aa/mzaf_384792072030970151.plus.aac.p.m4a", "https://music.apple.com/us/album/heat-waves/1508562310?i=1508562516"],
+    ["Bags", "Clairo", 261, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/67/b9/3d/67b93d4e-07cb-cd11-7d64-88762c42a230/mzaf_15744728589488284514.plus.aac.p.m4a", "https://music.apple.com/us/album/bags/1893175128?i=1893175134"],
+    ["Ribs", "Lorde", 259, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/13/8c/1a/138c1a93-5fdf-f1a3-c288-c0fd8d7c8d2f/mzaf_12940840614985303434.plus.aac.p.m4a", "https://music.apple.com/us/album/ribs/1440818584?i=1440818666"],
+    ["Best Part", "Daniel Caesar", 210, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/52/e4/4f/52e44f76-2397-114f-e749-ea7b9cd18a3c/mzaf_7907771188147988307.plus.aac.p.m4a", "https://music.apple.com/us/album/best-part-feat-h-e-r/1799080774?i=1799080776"],
+    ["Sweater Weather", "The Neighbourhood", 240, "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/8c/37/20/8c372047-2727-8054-9411-0e4867643dd8/mzaf_10169659262182214119.plus.aac.p.m4a", "https://music.apple.com/us/album/sweater-weather/635016635?i=635016640"]
+  ];
+  // a shuffle seeded by the week number, so the five change every Monday (midnight New York) with no server, same for everyone
+  const week = Math.floor((Date.now() - Date.UTC(1970, 0, 5, 5)) / (7 * 864e5)); // 1970-01-05 was a Monday
+  const rng = (a => () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; })(week);
+  const SONGS = POOL.map(x => [rng(), x]).sort((a, b) => a[0] - b[0]).slice(0, 5).map(x => x[1]);
+  const total = SONGS.reduce((n, x) => n + x[2], 0);
+  const np = document.querySelector('.np'), el = np.querySelector('.np-text'), btn = np.querySelector('.eq');
+  const audio = new Audio();
+  audio.preload = 'none';
+  let cur, fade;
+  const ramp = (to, done) => { // short volume fade so previews don't start or cut off abruptly
+    clearInterval(fade);
+    fade = setInterval(() => {
+      const d = to - audio.volume;
+      if (Math.abs(d) <= .05) { audio.volume = to; clearInterval(fade); if (done) done(); }
+      else audio.volume += Math.sign(d) * .05;
+    }, 30);
+  };
+  const play = () => {
+    if (audio.src !== cur[3]) audio.src = cur[3];
+    audio.volume = 0;
+    // browsers refuse sound until the visitor has clicked/tapped/typed on the page; the button click always counts
+    audio.play().then(() => { np.classList.add('playing'); ramp(.5); }).catch(() => {});
+  };
+  const stop = () => { np.classList.remove('playing'); ramp(0, () => audio.pause()); };
+  np.addEventListener('mouseenter', play);
+  np.addEventListener('mouseleave', stop);
+  btn.addEventListener('click', () => np.classList.contains('playing') ? stop() : play());
+  audio.addEventListener('ended', stop);
+  const tick = () => {
+    let t = (Date.now() / 1000) % total, i = 0;
+    while (t >= SONGS[i][2]) t -= SONGS[i++][2];
+    if (cur !== SONGS[i]) {
+      if (cur && np.classList.contains('playing')) stop();
+      cur = SONGS[i];
+      el.innerHTML = `<b>${cur[0]}</b> · ${cur[1]}`;
+      el.href = cur[4];
+      el.title = `${cur[0]} · ${cur[1]} (open in Apple Music)`;
+    }
+    el.style.setProperty('--p', (t / cur[2] * 100).toFixed(2) + '%'); // underline fills as the song plays
+  };
+  tick(); setInterval(tick, 1000);
+})();
+
+/* ---------- about me mood: Man United's latest result, kept fresh in mufc.json by an hourly GitHub Action ---------- */
+(() => {
+  const el = document.getElementById('mufc');
+  fetch('mufc.json', { cache: 'no-cache' })
+    .then(r => r.json())
+    .then(m => {
+      const score = `${m.us}–${m.them}`, pens = m.pens ? ' on penalties' : '';
+      const [mood, result] = m.result > 0 ? ['happy', `Man United beat ${m.opponent} ${score}${pens}`]
+        : m.result < 0 ? ['sad', `Man United lost ${score} to ${m.opponent}${pens}`]
+        : ['fine, I guess,', `Man United drew ${score} with ${m.opponent}`];
+      const link = Object.assign(document.createElement('a'), { href: m.url, target: '_blank', rel: 'noopener', textContent: result });
+      el.replaceChildren(` Currently I'm ${mood} because `, link, '.'); // DOM nodes, not innerHTML: names come from FotMob
+    })
+    .catch(() => {}); // no data: the sentence is simply left out
+})();
+
+/* ---------- nav drawers: one open at a time ---------- */
+(() => {
+  const tabs = [...document.querySelectorAll('.tab')];
+  // the phone ball sizes itself to the free gap, so refit now and again once the slide settles
+  const refit = () => dispatchEvent(new Event('resize'));
+  tabs.forEach(tab => tab.addEventListener('click', () => {
+    const open = tab.getAttribute('aria-expanded') !== 'true';
+    tabs.forEach(t => {
+      const on = t === tab && open, d = document.getElementById(t.getAttribute('aria-controls'));
+      t.setAttribute('aria-expanded', on);
+      d.classList.toggle('open', on);
+      d.inert = !on;
+    });
+    refit();
+  }));
+  document.querySelectorAll('.drawer').forEach(d => d.addEventListener('transitionend', e => {
+    if (e.target === d && e.propertyName === 'grid-template-rows') refit();
+  }));
 })();
 
 /* ---------- ascii 3d: shaded icosahedron, no deps ---------- */
@@ -259,7 +446,7 @@
   for (let i = 0; i < 12; i++) for (let j = i+1; j < 12; j++) for (let k = j+1; k < 12; k++)
     if (adj(i,j) && adj(j,k) && adj(i,k)) F.push([i, j, k]);
 
-  let cols = 0, rows = 0, cw = 7.2, chh = 12, cx = 0, cy = 0;
+  let cols = 0, rows = 0, cw = 7.2, chh = 12, cx = 0, cy = 0, gap = Infinity;
   let ax = 0.4, ay = 0.6, vx = 0, vy = 0.004;
   let grid, zbuf;
 
@@ -276,8 +463,12 @@
     rows = Math.floor(r.height / chh);
     grid = new Array(cols * rows);
     zbuf = new Float32Array(cols * rows);
-    cx = cols * (window.innerWidth > 640 ? 0.72 : 0.5);
-    cy = rows * (window.innerWidth > 640 ? 0.45 : 0.3);
+    if (window.innerWidth > 640) { cx = cols * 0.72; cy = rows * 0.5; gap = Infinity; }
+    else { // phone: fit the ball into the gap between the top and bottom text
+      const t = document.querySelector('.hero-text').getBoundingClientRect().bottom;
+      const b = document.querySelector('main').getBoundingClientRect().top;
+      cx = cols * 0.5; cy = ((t + b) / 2 - r.top) / chh; gap = (b - t) / chh;
+    }
   }
 
   function rotate([x, y, z]) {
@@ -290,7 +481,8 @@
   function frame() {
     grid.fill(' '); zbuf.fill(-Infinity);
     const aspect = chh / cw;                       // chars are taller than wide
-    const R = Math.min(rows * 0.42, cols / aspect * 0.42);
+    let R = Math.min(rows * 0.42, cols / aspect * 0.42, gap * 0.44);
+    if (R < 6) R = 0; // too squeezed to read (phone with drawer open): draw nothing
     const light = [0.4, 0.7, 0.6];
     const P = V.map(v => {
       const [x, y, z] = rotate(v);
@@ -331,14 +523,22 @@
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let dragging = false, lx = 0, ly = 0;
-  pre.addEventListener('pointerdown', e => { dragging = true; lx = e.clientX; ly = e.clientY; vx = vy = 0; pre.setPointerCapture(e.pointerId); });
+  // only the drawn ball is grabbable, not the empty page around it
+  const onBall = e => {
+    const r = pre.getBoundingClientRect();
+    const x = Math.floor((e.clientX - r.left) / cw), y = Math.floor((e.clientY - r.top) / chh);
+    return x >= 0 && x < cols && y >= 0 && y < rows && grid[y * cols + x] !== ' ';
+  };
+  pre.addEventListener('pointerdown', e => { if (!onBall(e)) return; dragging = true; pre.style.cursor = 'grabbing'; lx = e.clientX; ly = e.clientY; vx = vy = 0; pre.setPointerCapture(e.pointerId); });
   pre.addEventListener('pointermove', e => {
-    if (!dragging) return;
+    if (!dragging) { pre.style.cursor = onBall(e) ? 'grab' : ''; return; }
     vy = (e.clientX - lx) * 0.006; vx = (e.clientY - ly) * 0.006;
     ay += vy; ax += vx; lx = e.clientX; ly = e.clientY;
     if (reduce) frame();
   });
-  pre.addEventListener('pointerup', () => { dragging = false; });
+  const drop = e => { dragging = false; pre.style.cursor = onBall(e) ? 'grab' : ''; };
+  pre.addEventListener('pointerup', drop);
+  pre.addEventListener('pointercancel', drop);
 
   function loop() {
     if (!dragging) {
@@ -348,6 +548,40 @@
     if (scrollY < innerHeight) frame(); // hero off-screen: skip the raster
     requestAnimationFrame(loop);
   }
+
+  /* ---------- tab icon: the same icosahedron as a 32px black pixel wireframe, spinning with the ball ---------- */
+  const ico = document.querySelector('link[rel="icon"]'), fc = document.createElement('canvas');
+  fc.width = fc.height = 32;
+  const fx = fc.getContext('2d');
+  let lastIco = performance.now();
+  function favicon() {
+    const t = performance.now();
+    // the ball's rAF loop sleeps in background tabs, which is when the tab icon gets looked at: keep the idle spin going
+    if (document.hidden) ay += 0.004 * (t - lastIco) / (1000 / 60);
+    lastIco = t;
+    const P = V.map(rotate), pt = p => [Math.round(15.5 + p[0] * 14.5), Math.round(15.5 - p[1] * 14.5)];
+    // Bresenham: whole pixels only, so lines are exactly 1px with no anti-aliasing
+    const line = ([x0, y0], [x1, y1]) => {
+      const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+      for (let e = dx + dy; ; ) {
+        fx.fillRect(x0, y0, 1, 1);
+        if (x0 === x1 && y0 === y1) break;
+        const e2 = 2 * e;
+        if (e2 >= dy) { e += dy; x0 += sx; }
+        if (e2 <= dx) { e += dx; y0 += sy; }
+      }
+    };
+    fx.clearRect(0, 0, 32, 32);
+    fx.fillStyle = '#000';
+    for (const f of F) {
+      if (P[f[0]][2] + P[f[1]][2] + P[f[2]][2] <= 0) continue; // centroid points away: back face
+      const [a, b, c] = f.map(i => pt(P[i]));
+      line(a, b); line(b, c); line(c, a);
+    }
+    ico.href = fc.toDataURL('image/png');
+  }
+  favicon();
+  if (!reduce) setInterval(favicon, 100); // ~10fps is plenty for a 32px icon; background tabs throttle it further
 
   measure();
   addEventListener('resize', () => { measure(); frame(); });
