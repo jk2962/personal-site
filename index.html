@@ -69,8 +69,8 @@
     user-select: none;
     touch-action: none;
     transition: opacity 1.4s ease .2s;
-    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 72% 50%, #000 20%, transparent 75%);
-            mask-image: radial-gradient(ellipse 70% 80% at 72% 50%, #000 20%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 72% 47%, #000 20%, transparent 75%);
+            mask-image: radial-gradient(ellipse 70% 80% at 72% 47%, #000 20%, transparent 75%);
   }
   #ascii.on { opacity: .55; }
   .hero-text { position: relative; z-index: 1; max-width: 34rem; pointer-events: none; }
@@ -128,12 +128,28 @@
   .drawer.open li { opacity: 1; transform: none; }
   .drawer.open li:nth-child(2) { transition-delay: .06s; }
   .drawer.open li:nth-child(3) { transition-delay: .12s; }
+  /* per-row description popup: same 0fr -> 1fr slide as the drawers */
+  .rows button.name { justify-self: start; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+  .rows button.name::after { content: " +"; color: var(--mute); }
+  .rows button.name[aria-expanded="true"]::after { content: " \2013"; }
+  .rows button.name:hover, .rows button.name:focus-visible { color: var(--accent); }
+  .rows .head { line-height: 1.35; }
+  .rows .stack { margin-left: .4rem; font-size: .75rem; color: var(--mute); }
+  .more { grid-column: 1 / -1; display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s cubic-bezier(.2,.7,.2,1); }
+  .more.open { grid-template-rows: 1fr; }
+  .more > div { overflow: hidden; min-height: 0; }
+  .drawer .more p { margin: .35rem 0 0; font-size: .85rem; line-height: 1.5; color: var(--mute); }
 
   .courses { columns: 2; column-gap: 2rem; margin: 0; padding: 0; list-style: none; font-family: var(--serif); font-size: .85rem; line-height: 1.9; }
   .courses li { break-inside: avoid; }
   .courses span { color: var(--mute); }
 
   footer { position: relative; z-index: 1; margin-top: .4rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: .4rem 1.4rem; font-family: var(--serif); font-size: .8rem; color: var(--mute); }
+  @media (min-width: 641px) { .contact { white-space: nowrap; max-width: none; } } /* one line; phones still wrap */
+  /* little pixel cat: 16x8 canvas at 2x; turned sideways to walk the right edge */
+  .walker { position: absolute; right: 0; top: 0; width: 32px; height: 16px; image-rendering: pixelated; color: var(--ink); pointer-events: none; z-index: 1; }
+  footer .where { align-self: center; }
+  footer .pulse { margin: 0; align-self: center; min-width: 0; max-width: 100%; } /* sits after the icons in the footer row */
   footer pre { margin: 0 0 1.2rem; font: inherit; line-height: 1.2; }
 
   /* ---------- ask jason ---------- */
@@ -163,6 +179,7 @@
   @media (max-width: 640px) {
     #ascii { font-size: 9px; line-height: 9px; -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 50%, #000 10%, transparent 75%); mask-image: radial-gradient(ellipse 90% 60% at 50% 50%, #000 10%, transparent 75%); }
     .courses { columns: 1; }
+    body { overflow-y: auto; } /* an open popup can outgrow a phone screen; scroll rather than clip */
   }
   /* ---------- margin notes: live in the gutter, never in the way ---------- */
   .aside {
@@ -224,7 +241,7 @@
   @media (max-width: 1200px) { .aside { display: none; } }
 
   @media (prefers-reduced-motion: reduce) {
-    #ascii, .drawer, .drawer li { transition: none; }
+    #ascii, .drawer, .drawer li, .more { transition: none; }
     .eq i { animation: none; height: 6px; }
   }
 </style>
@@ -253,15 +270,17 @@
     <div class="drawer" id="experience" inert>
       <div>
         <ul class="rows">
-          <li><span class="name">Data Engineer Intern</span><span class="when">May 2026 – Present</span><span class="desc"><a href="https://ever.ag/data-labs">Ever.Ag Data Labs</a> · Lewisville, TX (Remote)</span></li>
-          <li><span class="name">Undergraduate Researcher</span><span class="when">Mar 2026 – May 2026</span><span class="desc">Cornell University × Corning Incorporated · Ithaca, NY</span></li>
+          <li><button type="button" class="name" aria-expanded="false" aria-controls="more-everag">Data Engineer Intern</button><span class="when">May 2026 – Present</span><span class="desc"><a href="https://ever.ag/data-labs">Ever.Ag Data Labs</a> · Lewisville, TX (Remote)</span><div class="more" id="more-everag" inert><div><p>SQL and ETL behind supply-chain reporting for dairy co-ops: plant mass-balance reports, a star schema with idempotent loads, and a SQL formatter the 12-person team now shares.</p></div></div></li>
+          <li><button type="button" class="name" aria-expanded="false" aria-controls="more-corning">Undergraduate Researcher</button><span class="when">Mar 2026 – May 2026</span><span class="desc">Cornell University × Corning Incorporated · Ithaca, NY</span><div class="more" id="more-corning" inert><div><p>Built the SQLite + Flask data layer for a QR-labeled lab inventory system. Checkout went from 2 minutes to 30 seconds; presented the results to Corning executives.</p></div></div></li>
         </ul>
       </div>
     </div>
     <div class="drawer" id="projects" inert>
       <div>
         <ul class="rows">
-          <li><span class="name">Simeon</span><span class="when">Sep 2026 – Present</span><a class="desc" href="https://github.com/jk2962/simeon">github.com/jk2962/simeon</a></li>
+          <li><span class="head"><button type="button" class="name" aria-expanded="false" aria-controls="more-simeon">Simeon</button> <span class="stack">Python, pandas, SciPy, Next.js, TypeScript</span></span><span class="when">Fall 2026</span><a class="desc" href="https://github.com/jk2962/simeon">github.com/jk2962/simeon</a><div class="more" id="more-simeon" inert><div><p>Forecasts Premier League matches with a Poisson model and scores them against bookmaker odds. Hourly GitHub Actions commit every forecast to git before kickoff.</p></div></div></li>
+          <li><span class="head"><button type="button" class="name" aria-expanded="false" aria-controls="more-nba">NBA Predictor</button> <span class="stack">Python, XGBoost, FastAPI, React, TypeScript</span></span><span class="when">Spring 2026</span><a class="desc" href="https://github.com/jk2962/nba-predictor">github.com/jk2962/nba-predictor</a><div class="more" id="more-nba" inert><div><p>XGBoost models that forecast a player&rsquo;s next-game points, rebounds and assists with 95% confidence intervals, served through a FastAPI backend to a React dashboard for fantasy picks.</p></div></div></li>
+          <li><span class="head"><button type="button" class="name" aria-expanded="false" aria-controls="more-clutch">Clutch</button> <span class="stack">Next.js, TypeScript, Tailwind, Claude API</span></span><span class="when">Spring 2026</span><a class="desc" href="https://github.com/bnudelman4/clutch">github.com/bnudelman4/clutch</a><div class="more" id="more-clutch" inert><div><p>Built at the Ramp × AppDev Hack&rarr;Hired hackathon: upload lecture notes and Claude turns them into a dependency-aware study plan, scheduled around your Google Calendar.</p></div></div></li>
         </ul>
       </div>
     </div>
@@ -269,18 +288,19 @@
 </header>
 
 <main>
-  <div class="pulse" title="simulated, obviously"><canvas width="64" height="14" aria-hidden="true"></canvas><span class="bpm"></span><span class="np"><button type="button" class="eq" aria-label="Play a preview of this song"><i></i><i></i><i></i></button><a class="np-text" target="_blank" rel="noopener"></a></span></div>
   <p class="contact">Always down to chat and open to work. Contact me at <a href="mailto:jk2962@cornell.edu">jk2962@cornell.edu</a>.</p>
 </main>
 
 <footer>
-  <span>New York, NY · 2026</span>
+  <span class="where">New York, NY · 2026</span>
   <ul class="links icons">
     <li><a href="mailto:jk2962@cornell.edu" aria-label="Email"><svg viewBox="0 0 13 13" aria-hidden="true"><path d="M0 2h13v1h-13zM0 3h2v1h-2zM11 3h2v1h-2zM0 4h1v1h-1zM2 4h1v1h-1zM10 4h1v1h-1zM12 4h1v1h-1zM0 5h1v1h-1zM3 5h1v1h-1zM9 5h1v1h-1zM12 5h1v1h-1zM0 6h1v1h-1zM4 6h1v1h-1zM8 6h1v1h-1zM12 6h1v1h-1zM0 7h1v1h-1zM5 7h1v1h-1zM7 7h1v1h-1zM12 7h1v1h-1zM0 8h1v1h-1zM6 8h1v1h-1zM12 8h1v1h-1zM0 9h1v1h-1zM12 9h1v1h-1zM0 10h1v1h-1zM12 10h1v1h-1zM0 11h13v1h-13z"/></svg></a></li>
     <li><a href="https://github.com/jk2962" aria-label="GitHub"><svg viewBox="0 0 13 13" aria-hidden="true"><path d="M4 0h5v1h-5zM2 1h9v1h-9zM1 2h2v1h-2zM4 2h5v1h-5zM10 2h2v1h-2zM1 3h2v1h-2zM10 3h2v1h-2zM0 4h2v1h-2zM11 4h2v1h-2zM0 5h2v1h-2zM11 5h2v1h-2zM0 6h2v1h-2zM11 6h2v1h-2zM0 7h2v1h-2zM11 7h2v1h-2zM0 8h3v1h-3zM10 8h3v1h-3zM1 9h4v1h-4zM8 9h4v1h-4zM1 10h4v1h-4zM8 10h4v1h-4zM2 11h3v1h-3zM8 11h3v1h-3zM4 12h1v1h-1zM8 12h1v1h-1z"/></svg></a></li>
     <li><a href="https://www.linkedin.com/in/jasonkim06/" aria-label="LinkedIn"><svg viewBox="0 0 13 13" aria-hidden="true"><path d="M1 0h11v1h-11zM0 1h13v1h-13zM0 2h2v1h-2zM4 2h9v1h-9zM0 3h2v1h-2zM4 3h9v1h-9zM0 4h13v1h-13zM0 5h2v1h-2zM4 5h1v1h-1zM10 5h3v1h-3zM0 6h2v1h-2zM4 6h1v1h-1zM7 6h2v1h-2zM11 6h2v1h-2zM0 7h2v1h-2zM4 7h1v1h-1zM7 7h2v1h-2zM11 7h2v1h-2zM0 8h2v1h-2zM4 8h1v1h-1zM7 8h2v1h-2zM11 8h2v1h-2zM0 9h2v1h-2zM4 9h1v1h-1zM7 9h2v1h-2zM11 9h2v1h-2zM0 10h2v1h-2zM4 10h1v1h-1zM7 10h2v1h-2zM11 10h2v1h-2zM0 11h13v1h-13zM1 12h11v1h-11z"/></svg></a></li>
   </ul>
+  <div class="pulse" title="simulated, obviously"><canvas width="64" height="14" aria-hidden="true"></canvas><span class="bpm"></span><span class="np"><button type="button" class="eq" aria-label="Play a preview of this song"><i></i><i></i><i></i></button><a class="np-text" target="_blank" rel="noopener"></a></span></div>
 </footer>
+<canvas class="walker" width="16" height="8" aria-hidden="true"></canvas>
 
 <script>
 /* ---------- fake heartbeat: the rate follows my New York day ---------- */
@@ -409,6 +429,44 @@
     .catch(() => {}); // no data: the sentence is simply left out
 })();
 
+/* ---------- tiny cat walking up and down the right edge ---------- */
+(() => {
+  const c = document.querySelector('.walker'), g = c.getContext('2d');
+  const top = [ // cat facing right: tail up on the left, ears + eye on the right
+    '#..........#..#.',
+    '#..........####.',
+    '#..........##.#.',
+    '.#.###########..',
+    '..############..',
+    '..############..',
+  ];
+  const frames = [ // legs mid-stride / legs together
+    [...top, '..#.#......#.#..', '.#...#....#...#.'],
+    [...top, '...#.#....#.#...', '...#.#....#.#...'],
+  ];
+  const draw = (f, dir) => {
+    g.clearRect(0, 0, 16, 8); g.fillStyle = getComputedStyle(c).color;
+    frames[f].forEach((row, y) => [...row].forEach((p, i) => { if (p === '#') g.fillRect(dir > 0 ? i : 15 - i, y, 1, 1); }));
+  };
+  let y = 0, dir = 1, rest = 0, step = 0, last = 0, lo = 0, hi = 0;
+  const fit = () => { lo = 48; hi = Math.max(lo, innerHeight - 72); y = Math.max(lo, Math.min(hi, y || hi * 0.6)); }; // stay inside the page padding
+  fit(); addEventListener('resize', fit);
+  const place = () => { c.style.transform = `translateY(${y}px) rotate(-90deg)`; }; // feet on the right wall, head points the way it walks
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { place(); draw(1, -1); return; }
+  requestAnimationFrame(function tick(t) {
+    const dt = Math.min(t - (last || t), 100); last = t;
+    if (rest > 0) rest -= dt;
+    else {
+      y -= dir * dt * 0.025; // ~25px/s; dir 1 = up
+      step += dt;
+      if (y < lo || y > hi) { y = Math.max(lo, Math.min(hi, y)); dir = -dir; }
+      else if (Math.random() < dt / 6000) { rest = 800 + Math.random() * 2200; if (Math.random() < 0.5) dir = -dir; } // stop and look around now and then
+    }
+    place(); draw(rest > 0 ? 1 : Math.floor(step / 180) % 2, dir);
+    requestAnimationFrame(tick);
+  });
+})();
+
 /* ---------- nav drawers: one open at a time ---------- */
 (() => {
   const tabs = [...document.querySelectorAll('.tab')];
@@ -423,6 +481,15 @@
       d.inert = !on;
     });
     refit();
+  }));
+  const names = [...document.querySelectorAll('.rows button.name')];
+  names.forEach(b => b.addEventListener('click', () => {
+    const open = b.getAttribute('aria-expanded') !== 'true';
+    names.forEach(n => { // one popup at a time: opening this one closes the rest
+      const on = n === b && open, m = document.getElementById(n.getAttribute('aria-controls'));
+      n.setAttribute('aria-expanded', on); m.classList.toggle('open', on); m.inert = !on;
+    });
+    setTimeout(refit, 320); // after the slide, so the phone ball resizes to the new gap
   }));
   document.querySelectorAll('.drawer').forEach(d => d.addEventListener('transitionend', e => {
     if (e.target === d && e.propertyName === 'grid-template-rows') refit();
@@ -463,7 +530,7 @@
     rows = Math.floor(r.height / chh);
     grid = new Array(cols * rows);
     zbuf = new Float32Array(cols * rows);
-    if (window.innerWidth > 640) { cx = cols * 0.72; cy = rows * 0.5; gap = Infinity; }
+    if (window.innerWidth > 640) { cx = cols * 0.72; cy = rows * 0.47; gap = Infinity; }
     else { // phone: fit the ball into the gap between the top and bottom text
       const t = document.querySelector('.hero-text').getBoundingClientRect().bottom;
       const b = document.querySelector('main').getBoundingClientRect().top;
